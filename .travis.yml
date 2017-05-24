@@ -19,15 +19,20 @@ cache: bundler
 
 script:
   - bundle exec rake && gem build dpl.gemspec && gem install dpl-*.gem && dpl --provider=script --script='echo foo'
+  - mkdir -p pkg && cp dpl-*.gem pkg/
 
 deploy:
-  provider: rubygems
-  api_key:
-    secure: ZmZoDL1tilWvQrqRWDm2K4xQ5Grt9eRJzYVZPLANR0P1TM5BJBLk+UhWCWCPkkDVIBWMa5ANsiFYBxtH65Lw+uqMztSpVusk0l0LQXZGv9jMpT9445A8008U3vvfS0ke7IG8Q4bMAC7Sd6VGaiHDyZC7zmNvnqMpmVX7ShcgBME=
-  gem: dpl
+  provider: qingstor
+  access_key_id: $ACCESS_KEY_ID
+  secret_access_key: $SECRET_ACCESS_KEY
+  bucket_name: $BUCKET_NAME
+  local_dir: $TRAVIS_BUILD_DIR/pkg
+  edge:
+    source: pengsrc/dpl
+    branch: master
   on:
-    repo: travis-ci/dpl
-    ruby: 2.2.6
+    branch: develop
+  skip_cleanup: true
 
 notifications:
   webhooks: "http://requestb.in/1guaq7t1"
